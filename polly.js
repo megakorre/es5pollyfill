@@ -1,3 +1,45 @@
+if (!Object.create) {
+    Object.create = function (o) {
+        if (arguments.length > 1) {
+            throw new Error('Object.create implementation only accepts the first parameter.');
+        }
+        function F() {}
+        F.prototype = o;
+        return new F();
+    };
+}
+
+if(!Object.keys) Object.keys = function(o){
+ if (o !== Object(o))
+      throw new TypeError('Object.keys called on non-object');
+ var ret=[],p;
+ for(p in o) if(Object.prototype.hasOwnProperty.call(o,p)) ret.push(p);
+ return ret;
+}
+
+if (!Function.prototype.bind) {
+
+  Function.prototype.bind = function (oThis) {
+
+    if (typeof this !== "function") // closest thing possible to the ECMAScript 5 internal IsCallable function
+      throw new TypeError("Function.prototype.bind - what is trying to be fBound is not callable");
+
+    var aArgs = Array.prototype.slice.call(arguments, 1), 
+        fToBind = this, 
+        fNOP = function () {},
+        fBound = function () {
+          return fToBind.apply(this instanceof fNOP ? this : oThis || window, aArgs.concat(Array.prototype.slice.call(arguments)));    
+        };
+
+    fNOP.prototype = this.prototype;
+    fBound.prototype = new fNOP();
+
+    return fBound;
+
+  };
+
+}
+
 if (!Array.prototype.map)
 {
   Array.prototype.map = function(fun /*, thisp */)
